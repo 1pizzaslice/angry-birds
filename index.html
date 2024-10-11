@@ -17,14 +17,21 @@
             }
             setTimeout(disimage, 1000);
 
+      function navigate(){
+        window.location.href="next.html";
+      }
+      function navinst(){
+        window.location.href="inst.html";
+      }
+     
     </script>
 </head>
 <body>
     <img src="images/angry.png"  id="first">
     <div id="main" >
          <img src="images/angrylogo.png" alt="Logo" id="logo"><br>
-        <button id="playy">LET'S PLAY</button><br>
-        <button id="inst">INSTRUCTIONS</button>
+        <button id="playy" onclick="navigate()">LET'S PLAY</button><br>
+        <button id="inst" onclick="navinst()">INSTRUCTIONS</button>
         <div id="wall"></div>
     </div>
 </body>
