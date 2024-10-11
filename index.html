@@ -3,10 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Angry Birds</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.jfif">
+    <title>Angry birds</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function disimage(){
+            const img= document.getElementById('first');
+            img.classList.add('slide');
+        setTimeout(function(){
+            document.getElementById('main').style.display ='block';
+            document.getElementById('first').style.display='none';
+                }, 500); 
+            }
+            setTimeout(disimage, 1000);
+
+    </script>
 </head>
 <body>
-    <h1>Angry Birds Game</h1>
-    <p>Going live soon ......</p>
+    <img src="images/angry.png"  id="first">
+    <div id="main" >
+         <img src="images/angrylogo.png" alt="Logo" id="logo"><br>
+        <button id="playy">LET'S PLAY</button><br>
+        <button id="inst">INSTRUCTIONS</button>
+        <div id="wall"></div>
+    </div>
 </body>
 </html>
