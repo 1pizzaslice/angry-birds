@@ -60,6 +60,45 @@ function drawsling() {
     }
 }
 
+function isCollidingCircleRect(circle, rect) {
+    const distX = Math.abs(circle.x - rect.x - rect.width / 2);
+    const distY = Math.abs(circle.y - rect.y - rect.height / 2);
+
+    if (distX > (rect.width / 2 + circle.radius)) { return false; }
+    if (distY > (rect.height / 2 + circle.radius)) { return false; }
+
+    if (distX <= (rect.width / 2)) { return true; }
+    if (distY <= (rect.height / 2)) { return true; }
+
+    const dx = distX - rect.width / 2;
+    const dy = distY - rect.height / 2;
+    return (dx * dx + dy * dy <= (circle.radius * circle.radius));
+}
+
+function checkCollisions() {
+
+    // collision with woods
+    woods.forEach(wood => {
+        if (isCollidingCircleRect(bird, wood)) {
+            bird.isFly = false;  // Stop the bird 
+            bird.velocityX = 0;
+            bird.velocityY = 0;
+        }
+    });
+
+    // collision with pigs
+    pigs.forEach(pig => {
+        if (isCollidingCircleRect(bird, pig)) {
+            bird.isFly = false;  // Stop the bird 
+            bird.velocityX = 0;
+            bird.velocityY = 0;
+
+            // Remove the pig
+            pigs = pigs.filter(p => p !== pig);
+        }
+    });
+}
+
 let woods = [
     { x: 1000, y: groundHeight - 100, width: 200, height: 35 },
     { x: 1360, y: groundHeight - 100, width: 200, height: 35 },
@@ -108,6 +147,7 @@ function newani() {
     drawWoods();
     drawPigs();
     applyGravity();
+    checkCollisions();
 
     requestAnimationFrame(newani);
 }
