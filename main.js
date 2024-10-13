@@ -25,11 +25,32 @@ let bird = {
     gravity: 0.5,  
     isOnSling: true,
 };
+let shotsRemaining = 4;
+let gameIsOver = false;
 
 let isDrag = false;
 let startX, startY;
 const groundHeight = 850;
 
+function resetBird(){
+    bird.x= 440;
+    bird.y=660;
+    bird.velocityX=0;
+    bird.velocityY=0;
+    bird.isFly=false;
+    bird.isOnSling = true;
+}
+function checkGameOver(){
+    if(shotsRemaining === 0 && bird.isFly === false){
+        gameIsOver = true;
+        alert("Game Over! Refresh to try again.");
+    }
+    else if(pigs.length === 0){
+        gameIsOver = true;
+        alert("You won! Refresh to play again");
+    }
+    return gameIsOver;
+}
 function drawBird(){
     ctx.drawImage(birdimg, bird.x - bird.radius, bird.y - bird.radius, bird.radius * 2, bird.radius * 2);
 }
@@ -77,23 +98,20 @@ function isCollidingCircleRect(circle, rect) {
 }
 
 function checkCollisions() {
-
+    if(!bird.isFly) return;
+    let birdStopped = false;
     // collision with woods
     woods.forEach(wood => {
         if (isCollidingCircleRect(bird, wood)) {
-            bird.isFly = false;  // Stop the bird 
-            bird.velocityX = 0;
-            bird.velocityY = 0;
+           birdStopped = true;
+          
         }
     });
 
     // collision with pigs
     pigs.forEach(pig => {
         if (isCollidingCircleRect(bird, pig)) {
-            bird.isFly = false;  // Stop the bird 
-            bird.velocityX = 0;
-            bird.velocityY = 0;
-
+           birdStopped = true;
             // Remove the pig
             pigs = pigs.filter(p => p !== pig);
             let audio = new Audio("audios/pig dead.mp3");
@@ -101,7 +119,19 @@ function checkCollisions() {
         }
     });
 }
+if(birdStopped){
+    bird.velocityX=0;
+    bird.velocityY=0;
+    bird.isFly = false;
+    bird.isOnSling = false;
 
+    if(!checkGameOver()){
+        if(shotsRemaining >0){
+            shotsRemaining--;
+            resetBird();
+        }
+    }
+}
 const pigFrames = [
     { sx: 0, sy: 0, width: 170, height: 170 },
     { sx: 170, sy: 0, width: 170, height: 170 },
@@ -157,6 +187,13 @@ function applyGravity() {
             bird.y = groundHeight - bird.radius;
             bird.isFly = false;
             bird.isOnSling = false;  
+
+            if(!checkGameOver()){
+                if(shotsRemaining >0){
+                    shotsRemaining--;
+                    resetBird();
+                }
+            }
         }
     }
 }
@@ -196,6 +233,7 @@ canvas.addEventListener('mousemove',(para) =>{
 const smokeimg= new Image();
 smokeimg.src= 'images/smoke.png';
 let smokeform=[];
+
 canvas.addEventListener('mouseup', () => {
     if (isDrag) {
         
