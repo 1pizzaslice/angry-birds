@@ -10,7 +10,7 @@ body {
    background-size: contain;
    }
 #logo{
-    padding-top: 50px;
+    padding-top: 60px;
 }
 #first{
     position:absolute;
@@ -31,7 +31,7 @@ body {
 }
 #main button{
     padding:15px;
-    margin:15px;
+    margin:25px;
     font-size:20px;
     font-weight: 900;
     cursor: pointer;
@@ -43,6 +43,9 @@ body {
 #main button:hover{
     background: white;
    color:orange;
+}
+#main #playy{
+    margin-top:70px;
 }
 #wall{
      width:100%;

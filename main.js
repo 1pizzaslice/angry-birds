@@ -1,5 +1,6 @@
 const canvas = document.getElementById('gamecanvas');
 const ctx = canvas.getContext('2d');
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -12,10 +13,7 @@ ground.src = 'images/base.png';
 const woodimg = new Image();
 woodimg.src = 'images/wood2.png';
 const pigimg = new Image();
-pigimg.src = 'images/pig.png';
-
-let shotsRemaining = 4;
-let gameIsOver = false;
+pigimg.src = 'images/pigsp2.png';
 
 let bird = {
     x: 440,
@@ -27,31 +25,32 @@ let bird = {
     gravity: 0.5,  
     isOnSling: true,
 };
-
-function resetBird() {
-    bird.x = 440;
-    bird.y = 600;
-    bird.velocityX = 0;
-    bird.velocityY = 0;
-    bird.isFly = false;
-    bird.isOnSling = true;
-}
+let shotsRemaining = 4;
+let gameIsOver = false;
 
 let isDrag = false;
 let startX, startY;
 const groundHeight = 850;
 
-function checkGameOver() {
-    if (shotsRemaining === 0 && bird.isFly === false) {
+function resetBird(){
+    bird.x= 440;
+    bird.y=660;
+    bird.velocityX=0;
+    bird.velocityY=0;
+    bird.isFly=false;
+    bird.isOnSling = true;
+}
+function checkGameOver(){
+    if(shotsRemaining === 0 && bird.isFly === false){
         gameIsOver = true;
         alert("Game Over! Refresh to try again.");
-    } else if (pigs.length === 0) {
+    }
+    else if(pigs.length === 0){
         gameIsOver = true;
-        alert("You Win! Refresh to play again.");
+        alert("You won! Refresh to play again");
     }
     return gameIsOver;
 }
-
 function drawBird(){
     ctx.drawImage(birdimg, bird.x - bird.radius, bird.y - bird.radius, bird.radius * 2, bird.radius * 2);
 }
@@ -99,42 +98,47 @@ function isCollidingCircleRect(circle, rect) {
 }
 
 function checkCollisions() {
-    if (!bird.isFly) return; // Only check collisions when bird is flying
-
+    if(!bird.isFly) return;
     let birdStopped = false;
-
-    // Collision with woods
+    // collision with woods
     woods.forEach(wood => {
         if (isCollidingCircleRect(bird, wood)) {
-            birdStopped = true;
+           birdStopped = true;
+          
         }
     });
 
-    // Collision with pigs
+    // collision with pigs
     pigs.forEach(pig => {
         if (isCollidingCircleRect(bird, pig)) {
-            birdStopped = true;
+           birdStopped = true;
             // Remove the pig
             pigs = pigs.filter(p => p !== pig);
+            let audio = new Audio("audios/pig dead.mp3");
+            audio.play();
         }
     });
+}
+if(birdStopped){
+    bird.velocityX=0;
+    bird.velocityY=0;
+    bird.isFly = false;
+    bird.isOnSling = false;
 
-    // If the bird has stopped due to a collision
-    if (birdStopped) {
-        bird.velocityX = 0;
-        bird.velocityY = 0;
-        bird.isFly = false; 
-        bird.isOnSling = false;
-
-        if (!checkGameOver()) {
-            if (shotsRemaining > 0) {
-                shotsRemaining--;
-                resetBird(); 
-            }
+    if(!checkGameOver()){
+        if(shotsRemaining >0){
+            shotsRemaining--;
+            resetBird();
         }
     }
 }
-
+const pigFrames = [
+    { sx: 0, sy: 0, width: 170, height: 170 },
+    { sx: 170, sy: 0, width: 170, height: 170 },
+    { sx: 340, sy: 0, width: 170, height: 170 }, 
+    { sx: 510, sy: 0, width: 170, height: 170 } ,
+    { sx: 680, sy: 0, width: 170, height: 170 } ,
+];
 let woods = [
     { x: 1000, y: groundHeight - 100, width: 200, height: 35 },
     { x: 1360, y: groundHeight - 100, width: 200, height: 35 },
@@ -142,9 +146,9 @@ let woods = [
 ];
 
 let pigs = [
-    { x: 1070, y: groundHeight - 160, width: 60, height: 60 },
-    { x: 1430, y: groundHeight - 160, width: 60, height: 60 },
-    { x: 1270, y: groundHeight - 560, width: 60, height: 60 },
+    { x: 1070, y: groundHeight - 180, width: 80, height: 80, frameindex:0},
+    { x: 1430, y: groundHeight - 180, width: 80, height: 80, frameindex:0 },
+    { x: 1270, y: groundHeight - 580, width: 80, height: 80, frameindex:0 },
 ];
 
 function drawWoods() {
@@ -155,8 +159,20 @@ function drawWoods() {
 
 function drawPigs() {
     pigs.forEach(pig => {
-        ctx.drawImage(pigimg, pig.x, pig.y, pig.width, pig.height);
-    });
+        if(!pig.isFall){
+            const frame = pigFrames[pig.frameindex];
+            ctx.drawImage(pigimg, frame.sx, frame.sy, frame.width, frame.height, pig.x, pig.y, pig.width, pig.height);
+          } } 
+    );
+}
+let it=0;
+function resetPigs() {
+    pigs.forEach(pig => {
+       if(it%16== 0)
+        pig.frameindex = (pig.frameindex +1)%5;
+       it++;
+    }
+);
 }
 
 function applyGravity() {
@@ -172,8 +188,8 @@ function applyGravity() {
             bird.isFly = false;
             bird.isOnSling = false;  
 
-            if (!checkGameOver()) {
-                if (shotsRemaining > 0) {
+            if(!checkGameOver()){
+                if(shotsRemaining >0){
                     shotsRemaining--;
                     resetBird();
                 }
@@ -191,7 +207,9 @@ function newani() {
     drawPigs();
     applyGravity();
     checkCollisions();
-
+   
+   resetPigs();
+   
     requestAnimationFrame(newani);
 }
 
@@ -200,7 +218,9 @@ canvas.addEventListener('mousedown', (para) => {
         isDrag = true;
         startX = para.clientX;
         startY = para.clientY;
-    }
+    
+    let audio = new Audio("audios/sling shot.mp3");
+    audio.play(); }
 });
 
 canvas.addEventListener('mousemove',(para) =>{
@@ -208,7 +228,11 @@ canvas.addEventListener('mousemove',(para) =>{
         bird.x = para.clientX;
         bird.y = para.clientY; 
     }
+   
 });
+const smokeimg= new Image();
+smokeimg.src= 'images/smoke.png';
+let smokeform=[];
 
 canvas.addEventListener('mouseup', () => {
     if (isDrag) {
@@ -218,9 +242,17 @@ canvas.addEventListener('mouseup', () => {
         bird.isFly = true;
         bird.isOnSling = false;  
         isDrag = false;
-    }
+        smokeform.push({x: bird.velocityX, y:bird.velocityY});
+    let audio = new Audio("audios/shoot-audio.mp3");
+    audio.play(); }
 });
-
+function drawsmoke(){
+    ctx.con =0.5;
+    for(let i=0; i< smokeform.length; i++){
+        ctx.drawimage(smokeimg, bird.x, bird.y, smokeform[i].x, smokeform[i].y);
+    }
+   
+}
 let imgs = 0;
 const total = 4; 
 
