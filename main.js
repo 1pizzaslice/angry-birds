@@ -14,6 +14,9 @@ woodimg.src = 'images/wood2.png';
 const pigimg = new Image();
 pigimg.src = 'images/pig.png';
 
+let shotsRemaining = 4;
+let gameIsOver = false;
+
 let bird = {
     x: 440,
     y: 600, 
@@ -25,9 +28,29 @@ let bird = {
     isOnSling: true,
 };
 
+function resetBird() {
+    bird.x = 440;
+    bird.y = 600;
+    bird.velocityX = 0;
+    bird.velocityY = 0;
+    bird.isFly = false;
+    bird.isOnSling = true;
+}
+
 let isDrag = false;
 let startX, startY;
 const groundHeight = 850;
+
+function checkGameOver() {
+    if (shotsRemaining === 0 && bird.isFly === false) {
+        gameIsOver = true;
+        alert("Game Over! Refresh to try again.");
+    } else if (pigs.length === 0) {
+        gameIsOver = true;
+        alert("You Win! Refresh to play again.");
+    }
+    return gameIsOver;
+}
 
 function drawBird(){
     ctx.drawImage(birdimg, bird.x - bird.radius, bird.y - bird.radius, bird.radius * 2, bird.radius * 2);
@@ -76,27 +99,40 @@ function isCollidingCircleRect(circle, rect) {
 }
 
 function checkCollisions() {
+    if (!bird.isFly) return; // Only check collisions when bird is flying
 
-    // collision with woods
+    let birdStopped = false;
+
+    // Collision with woods
     woods.forEach(wood => {
         if (isCollidingCircleRect(bird, wood)) {
-            bird.isFly = false;  // Stop the bird 
-            bird.velocityX = 0;
-            bird.velocityY = 0;
+            birdStopped = true;
         }
     });
 
-    // collision with pigs
+    // Collision with pigs
     pigs.forEach(pig => {
         if (isCollidingCircleRect(bird, pig)) {
-            bird.isFly = false;  // Stop the bird 
-            bird.velocityX = 0;
-            bird.velocityY = 0;
-
+            birdStopped = true;
             // Remove the pig
             pigs = pigs.filter(p => p !== pig);
         }
     });
+
+    // If the bird has stopped due to a collision
+    if (birdStopped) {
+        bird.velocityX = 0;
+        bird.velocityY = 0;
+        bird.isFly = false; 
+        bird.isOnSling = false;
+
+        if (!checkGameOver()) {
+            if (shotsRemaining > 0) {
+                shotsRemaining--;
+                resetBird(); 
+            }
+        }
+    }
 }
 
 let woods = [
@@ -135,6 +171,13 @@ function applyGravity() {
             bird.y = groundHeight - bird.radius;
             bird.isFly = false;
             bird.isOnSling = false;  
+
+            if (!checkGameOver()) {
+                if (shotsRemaining > 0) {
+                    shotsRemaining--;
+                    resetBird();
+                }
+            }
         }
     }
 }
