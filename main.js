@@ -9,6 +9,10 @@ const slingimg = new Image();
 slingimg.src = 'images/slingst.png'; 
 const ground = new Image();
 ground.src = 'images/base.png';
+const woodimg = new Image();
+woodimg.src = 'images/wood2.png';
+const pigimg = new Image();
+pigimg.src = 'images/pig.png';
 
 let bird = {
     x: 440,
@@ -56,6 +60,30 @@ function drawsling() {
     }
 }
 
+let woods = [
+    { x: 1000, y: groundHeight - 100, width: 200, height: 35 },
+    { x: 1360, y: groundHeight - 100, width: 200, height: 35 },
+    { x: 1200, y: groundHeight - 500, width: 200, height: 35 }, 
+];
+
+let pigs = [
+    { x: 1070, y: groundHeight - 160, width: 60, height: 60 },
+    { x: 1430, y: groundHeight - 160, width: 60, height: 60 },
+    { x: 1270, y: groundHeight - 560, width: 60, height: 60 },
+];
+
+function drawWoods() {
+    woods.forEach(wood => {
+        ctx.drawImage(woodimg, wood.x, wood.y, wood.width, wood.height);
+    });
+}
+
+function drawPigs() {
+    pigs.forEach(pig => {
+        ctx.drawImage(pigimg, pig.x, pig.y, pig.width, pig.height);
+    });
+}
+
 function applyGravity() {
     
     if (bird.isFly) {
@@ -77,6 +105,8 @@ function newani() {
     drawsling();
     drawBird();
     drawGround();
+    drawWoods();
+    drawPigs();
     applyGravity();
 
     requestAnimationFrame(newani);
@@ -109,9 +139,9 @@ canvas.addEventListener('mouseup', () => {
 });
 
 let imgs = 0;
-const total = 2; 
+const total = 4; 
 
-birdimg.onload = slingimg.onload = () => {
+birdimg.onload = slingimg.onload = ground.onload = woodimg.onload = pigimg.onload = () => {
     imgs++;
     if (imgs === total) {
         newani(); 
