@@ -5,8 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="images/favicon.jfif">
     <title>Instructions</title>
+    <style>
+       *{
+        border: 100 200 2 #000;
+       }
+        body{
+           border-radius: 5px;
+           text-align:center;
+            background:linear-gradient( rgb(253, 253, 57), orange);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        h1{
+           text-decoration: underline;
+            font-size:80px;
+            margin-bottom: 30px;
+        }
+        ol {
+            padding-top:30px;
+            list-style-type :none ;
+        }
+        ol li{
+          font-size:25px;
+          padding:10px;
+        }
+        button{
+    padding:15px 25px;
+    margin:10px;
+    font-size:20px;
+    font-weight: 900;
+    cursor: pointer;
+    border-radius: 30px;
+    background-color:#fff;
+    color:#ffc404;
+    font-family:Arial, Helvetica, sans-serif;
+}
+button:hover{
+    background:#ffc404;
+    color:white;
+}
+    </style>
+   <script>
+    function navigateback(){
+        window.location.href="index.html";
+    }
+    function navigatego(){
+        window.location.href = "next.html";
+    }
+   </script>
 </head>
 <body>
-    
+    <h1>Instructions</h1>
+    <video width="800px" height="350px" controls>
+        <source src="audios/videoin.mp4" type="video/mp4">
+    </video>
+    <ol>
+        <li>1. Main objective of the game is to aim and defeat the green pigs by launching birds towards them.</li>
+        <li>2. Tap and drag the bird back to aim and adjust the power of the shot.</li>
+        <li>3. Release your finger to launch the bird</li>
+        <li>4. To complete a level, you must destroy all the green pigs before running out of the birds.</li>
+        <li>5. If you fail to defeat green pigs, game will be over</li>
+        <li>6. You can restart the game at any time.</li>
+    </ol>
+    <button onclick="navigateback()" >Go Back</button>
+    <button onclick="navigatego()">Play</button>
 </body>
 </html>
