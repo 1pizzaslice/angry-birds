@@ -271,10 +271,23 @@ canvas.addEventListener('mousedown', (para) => {
     }
 });
 
+const maxDragDistance = 150; 
+
 canvas.addEventListener('mousemove', (para) => {
     if (isDrag) {
-        bird.x = para.clientX;
-        bird.y = para.clientY;
+        
+        const dx = para.clientX - 440; 
+        const dy = para.clientY - 600; 
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > maxDragDistance) {
+            const angle = Math.atan2(dy, dx);
+            bird.x = 440 + maxDragDistance * Math.cos(angle);
+            bird.y = 600 + maxDragDistance * Math.sin(angle);
+        } else {
+            bird.x = para.clientX;
+            bird.y = para.clientY;
+        }
     }
 });
 
