@@ -71,11 +71,15 @@ function checkGameOver(){
 
     if(pigs.length === 0){
         gameIsOver = true;
-        alert("You won! Refresh to play again");
+        setTimeout(() => {
+            alert("You won! Refresh to play again");
+        }, 500); 
     }
     else if(shotsRemaining === 0 && bird.isFly === false){
         gameIsOver = true;
-        alert("Game Over! Refresh to try again.");
+        setTimeout(() => {
+            alert("Game Over! Refresh to try again.");
+        }, 500); 
     }
     return gameIsOver;
 }
